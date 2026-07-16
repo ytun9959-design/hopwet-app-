@@ -18,15 +18,11 @@ jobs:
           pip3 install --upgrade pip
           pip3 install buildozer cython==0.29.33
 
-      - name: Auto Accept Android Licenses
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | buildozer android licenses || true
-
       - name: Build Android APK
         run: |
           export PATH=$PATH:~/.local/bin
+          # ဤနေရာတွင် license များကို auto accept လုပ်ရန် buildozer.spec တွင်ပါဝင်ပြီးသားဖြစ်၍ env သုံးပြီး run ပါမည်
+          export APP_ANDROID_ACCEPT_SDK_LICENSE="y"
           buildozer android debug
 
       - name: Upload APK Artifact
