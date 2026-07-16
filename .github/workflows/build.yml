@@ -11,7 +11,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev
-          sudo apt-get install -y python3-pip python3-setuptools python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
+          sudo apt-get install -y python3-pip python3-setuptools python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev openjdk-17-jdk-headless
 
       - name: Install Buildozer and Cython
         run: |
@@ -19,15 +19,11 @@ jobs:
           pip3 install buildozer cython==0.29.33
 
       - name: Build Android APK
+        env:
+          APP_ANDROID_ACCEPT_SDK_LICENSE: "y"
+          ANDROID_BUILD_TOOLS_VERSION: "33.0.0"
         run: |
           export PATH=$PATH:~/.local/bin
-          # ဤနေရာတွင် license များကို auto accept လုပ်ရန် buildozer.spec တွင်ပါဝင်ပြီးသားဖြစ်၍ env သုံးပြီး run ပါမည်
-          export APP_ANDROID_ACCEPT_SDK_LICENSE="y"
+          # buildozer spec ထဲက target api တွေကို config ကနေ တိုက်ရိုက် override လုပ်ပြီး runs ပါတယ်
           buildozer android debug
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: bin/*.apk
           
